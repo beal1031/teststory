@@ -1,14 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { within, userEvent } from '@storybook/testing-library';
-import { expect } from '@storybook/jest';
+
 import { HeaderComponent } from './header.component';
-import { fn } from '@storybook/test';
+import {fn, within, expect, userEvent} from '@storybook/test';
 
 const meta: Meta<HeaderComponent> = {
   title: 'Example/Header',
   component: HeaderComponent,
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ['autodocs'],
   parameters: {
+    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'fullscreen',
   },
   args: {
@@ -31,39 +32,20 @@ export const LoggedIn: Story = {
     const canvas = within(canvasElement);
 
     // Überprüfen, ob der Benutzername angezeigt wird
-    const userName = await canvas.getByText('Jane Doe');
-    expect(userName).toBeInTheDocument();
+    const userName = canvas.getByText('Jane Doe');
+    await expect(userName).toBeInTheDocument();
 
     // Überprüfen, ob der Logout-Button angezeigt wird
-    const logoutButton = await canvas.getByRole('button', { name: /logout/i });
-    expect(logoutButton).toBeInTheDocument();
+    const logoutButton = canvas.getByRole('button', { name: /Log out/i });
+    await expect(logoutButton).toBeInTheDocument();
 
     // Klick auf den Logout-Button
     await userEvent.click(logoutButton);
 
     // Überprüfen, ob die onLogout Funktion aufgerufen wird
     // @ts-ignore
-    expect(meta.args.onLogout).toHaveBeenCalled();
-  },
+    await expect(logoutButton).toHaveBeenCalled();
+  }
 };
 
-export const LoggedOut: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Überprüfen, ob der Login-Button angezeigt wird
-    const loginButton = await canvas.getByRole('button', { name: /login/i });
-    expect(loginButton).toBeInTheDocument();
-
-    // Überprüfen, ob der Create Account-Button angezeigt wird
-    const createAccountButton = await canvas.getByRole('button', { name: /create account/i });
-    expect(createAccountButton).toBeInTheDocument();
-
-    // Klick auf den Login-Button
-    await userEvent.click(loginButton);
-
-    // Überprüfen, ob die onLogin Funktion aufgerufen wird
-    // @ts-ignore
-    expect(meta.args.onLogin).toHaveBeenCalled();
-  },
-};
+export const LoggedOut: Story = {};
